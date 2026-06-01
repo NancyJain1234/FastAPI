@@ -158,3 +158,17 @@ def get_patients(
 
     return query.offset(offset).limit(limit).all()
 
+@app.post("/signup" , response_model= UserResponse , status_code=201)
+def signup(user : UserCreate , db: Session = Depends(get_db)):
+    existing = db.query(UserDB).filter(UserDB.username == user.username).first()
+    if existing:
+        raise HTTPException(status_code = 400 , detail = "Username already exists")
+    
+    new_user = UserDB(
+        username = user.username,
+        hashed_password = hash_password(user.password)
+    )
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
