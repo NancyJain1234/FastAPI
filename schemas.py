@@ -54,7 +54,7 @@ class UserResponse(BaseModel):
     username:str
 
     class Config:
-        from_attributes:True
+        from_attributes = True
 
 
 class Token(BaseModel):
